@@ -11,21 +11,25 @@ docker run -d -p 3000:3000 --name did-web-demo did-web-demo
 ## Step-by-Step
 
 ### 1. Build Image (with your domain)
+
 ```bash
 docker build --build-arg DOMAIN=your-domain.ngrok-free.app -t did-web-demo .
 ```
 
 ### 2. Run Container
+
 ```bash
 docker run -d -p 3000:3000 --name did-web-demo did-web-demo
 ```
 
 ### 3. Start ngrok (use SAME domain)
+
 ```bash
 ngrok http 3000 --domain=your-domain.ngrok-free.app
 ```
 
 ### 4. Test
+
 ```bash
 # Check health
 curl http://localhost:3000/health
@@ -35,6 +39,7 @@ curl http://localhost:3000/.well-known/did.json
 ```
 
 ### 5. Resolve DID
+
 Visit: `https://dev.uniresolver.io/#did:web:your-domain.ngrok-free.app`
 
 ## Using Docker Compose
@@ -112,23 +117,4 @@ ngrok http 3000 --domain=abc123.ngrok-free.app
 
 # Browser: Resolve DID
 https://dev.uniresolver.io/#did:web:abc123.ngrok-free.app
-```
-
-## Troubleshooting
-
-**Build fails with "DOMAIN required"**
-- You forgot `--build-arg DOMAIN=...`
-
-**Port 3000 in use**
-- Use different port: `docker run -d -p 3001:3000 ...`
-
-**Can't resolve DID**
-- Check ngrok is running with correct domain
-- Verify: `curl https://your-domain.ngrok-free.app/.well-known/did.json`
-
-**Need to see what's inside**
-```bash
-docker exec -it did-web-demo sh
-ls -la /app
-cat /app/.well-known/did.json
 ```
