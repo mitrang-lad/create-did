@@ -1,0 +1,34 @@
+# Dependency directories
+node_modules/
+package-lock.json
+
+# Generated keys (KEEP SECURE!)
+keys/
+*.pem
+*.key
+
+# Generated DID documents (can be regenerated)
+did-document/
+
+# Environment variables
+.env
+.env.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Optional: Allow .well-known for deployment
+# Uncomment if you want to commit the hosting files
+# !.well-known/

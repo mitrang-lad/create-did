@@ -1,0 +1,20 @@
+{
+  "name": "did-web-demo",
+  "version": "1.0.0",
+  "description": "Simple DID:web demonstration with key generation, DID document creation, and hosting",
+  "main": "3-server.js",
+  "scripts": {
+    "generate-keys": "node 1-generate-keys.js",
+    "create-did": "node 2-create-did-document.js",
+    "serve": "node 3-server.js",
+    "start": "node 3-server.js"
+  },
+  "keywords": ["did", "did:web", "ssi", "decentralized-identifiers"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "jose": "^4.15.9",
+    "cors": "^2.8.5"
+  }
+}
