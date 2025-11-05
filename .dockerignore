@@ -1,0 +1,34 @@
+# Node modules (will be installed in container)
+node_modules/
+npm-debug.log
+package-lock.json
+
+# Generated keys and documents (will be generated during build)
+keys/
+did-document/
+.well-known/
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+README.md
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+
+# Logs
+logs/
+*.log

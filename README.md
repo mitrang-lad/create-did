@@ -25,6 +25,11 @@ This project provides a complete toolkit for demonstrating DID:web functionality
 
 ## 🔧 Prerequisites
 
+### For Docker (Recommended for Quick Demo)
+- **Docker** (20.10 or higher)
+- **ngrok** (for exposing local server with a public domain)
+
+### For Manual Setup
 - **Node.js** (v14 or higher)
 - **npm** (comes with Node.js)
 - **ngrok** (for exposing local server with a public domain)
@@ -32,12 +37,102 @@ This project provides a complete toolkit for demonstrating DID:web functionality
 
 ## 📦 Installation
 
+Choose either Docker or Manual setup:
+
+### Option A: Docker (Fastest!)
+
+No installation needed - Docker handles everything!
+
+### Option B: Manual Setup
+
 ```bash
 # Install dependencies
 npm install
 ```
 
 ## 🚀 Quick Start
+
+### 🐳 Docker Quick Start (Recommended)
+
+The fastest way to get started - everything is automated!
+
+#### Step 1: Build Docker Image with Your Domain
+
+```bash
+# Build the image with your ngrok domain
+docker build --build-arg DOMAIN=your-domain.ngrok-free.app -t did-web-demo .
+```
+
+**What happens during build:**
+- ✅ Installs all dependencies
+- ✅ Generates RSA-2048 key pair
+- ✅ Creates self-signed X.509 certificate
+- ✅ Creates DID document with your domain
+- ✅ Sets up `.well-known` directory structure
+
+#### Step 2: Run the Container
+
+```bash
+# Run the container
+docker run -d -p 3000:3000 --name did-web-demo did-web-demo
+```
+
+**Or using docker-compose:**
+
+```bash
+# Build with domain
+DOMAIN=your-domain.ngrok-free.app docker-compose build
+
+# Run
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+```
+
+#### Step 3: Expose with ngrok
+
+```bash
+# Use the SAME domain you specified during build
+ngrok http 3000 --domain=your-domain.ngrok-free.app
+```
+
+#### Step 4: Resolve Your DID
+
+Visit your DID resolver:
+```
+https://dev.uniresolver.io/#did:web:your-domain.ngrok-free.app
+```
+
+Or test directly:
+```bash
+curl https://your-domain.ngrok-free.app/.well-known/did.json
+```
+
+**Docker Management Commands:**
+
+```bash
+# View logs
+docker logs -f did-web-demo
+
+# Stop container
+docker stop did-web-demo
+
+# Start container
+docker start did-web-demo
+
+# Remove container
+docker rm -f did-web-demo
+
+# View container info
+docker ps
+```
+
+---
+
+### 💻 Manual Quick Start
+
+For more control and learning, you can set up manually:
 
 ### Step 1: Generate Keys
 
@@ -129,10 +224,16 @@ curl https://your-domain.ngrok-free.app/.well-known/x509CertificateChain.pem
 ```
 create-did/
 ├── 1-generate-keys.js           # Key pair generation script
-├── 2-create-did-document.js     # DID document creation script
+├── 2-create-did-document.js     # Interactive DID document creation
+├── create-did-docker.js         # Non-interactive DID creation (for Docker)
 ├── 3-server.js                  # HTTP server for hosting
 ├── package.json                 # Project dependencies
 ├── README.md                    # This file
+│
+├── Dockerfile                   # Docker configuration
+├── docker-compose.yml           # Docker Compose configuration
+├── .dockerignore                # Docker build exclusions
+├── .gitignore                   # Git exclusions
 │
 ├── keys/                        # Generated keys (gitignored)
 │   ├── private-key.json
@@ -326,20 +427,75 @@ ISC License - Free to use for educational and commercial purposes.
 
 ## 💡 Troubleshooting
 
-### "Public key not found" Error
+### Docker Issues
+
+#### Docker Build Fails with "DOMAIN required" Error
+**Problem:** Forgot to provide DOMAIN build argument
+**Solution:**
+```bash
+docker build --build-arg DOMAIN=your-domain.ngrok-free.app -t did-web-demo .
+```
+
+#### Container Exits Immediately
+**Problem:** Check logs for errors
+**Solution:**
+```bash
+docker logs did-web-demo
+```
+
+#### Port 3000 Already in Use
+**Problem:** Another service using port 3000
+**Solution:**
+```bash
+# Use a different port
+docker run -d -p 3001:3000 --name did-web-demo did-web-demo
+
+# Or stop the conflicting service
+lsof -ti:3000 | xargs kill
+```
+
+#### Can't Access DID Document
+**Problem:** Container not running or ngrok not configured
+**Solution:**
+```bash
+# Check container status
+docker ps
+
+# Check if server is responding
+curl http://localhost:3000/health
+
+# Verify ngrok is running with correct domain
+```
+
+#### Rebuild with Different Domain
+**Problem:** Need to change domain after building
+**Solution:**
+```bash
+# Remove old container and image
+docker rm -f did-web-demo
+docker rmi did-web-demo
+
+# Rebuild with new domain
+docker build --build-arg DOMAIN=new-domain.ngrok-free.app -t did-web-demo .
+docker run -d -p 3000:3000 --name did-web-demo did-web-demo
+```
+
+### Manual Setup Issues
+
+#### "Public key not found" Error
 **Solution:** Run `npm run generate-keys` first
 
-### ngrok Domain Mismatch
+#### ngrok Domain Mismatch
 **Solution:** Ensure the domain in ngrok matches the domain used in `npm run create-did`
 
-### DID Resolution Fails
+#### DID Resolution Fails
 **Checks:**
-1. Is the server running? (`npm start`)
+1. Is the server running? (`npm start` or `docker ps`)
 2. Is ngrok connected and forwarding?
 3. Does the domain match?
 4. Can you access `https://your-domain/.well-known/did.json` directly?
 
-### Certificate Issues
+#### Certificate Issues
 **Solution:** If OpenSSL is not available, the script falls back to a placeholder certificate. Install OpenSSL for proper certificate generation.
 
 ## 🎉 Success Indicators
